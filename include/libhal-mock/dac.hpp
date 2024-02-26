@@ -14,8 +14,9 @@
 
 #pragma once
 
-#include "testing.hpp"
 #include <libhal/dac.hpp>
+
+#include "testing.hpp"
 
 namespace hal::mock {
 /**
@@ -38,10 +39,9 @@ struct dac : public hal::dac
   spy_handler<float> spy_write;
 
 private:
-  result<write_t> driver_write(float p_value) override
+  void driver_write(float p_value) override
   {
-    HAL_CHECK(spy_write.record(p_value));
-    return write_t{};
+    spy_write.record(p_value);
   };
 };
 }  // namespace hal::mock

@@ -38,16 +38,17 @@ void spi_mock_test()
                                                  true };
 
     hal::mock::write_only_spi mock;
-    mock.spy_configure.trigger_error_on_call(3);
+    mock.spy_configure.trigger_error_on_call(
+      3, [&]() { throw hal::operation_not_supported(&mock); });
 
     // Exercise + Verify
-    expect(bool{ mock.configure(expected1) });
+    mock.configure(expected1);
     expect(expected1 == std::get<0>(mock.spy_configure.call_history().at(0)));
 
-    expect(bool{ mock.configure(expected2) });
+    mock.configure(expected2);
     expect(expected2 == std::get<0>(mock.spy_configure.call_history().at(1)));
 
-    expect(!mock.configure(expected2));
+    [[maybe_unused]] auto f = throws([&]() { mock.configure(expected2); });
     expect(expected2 == std::get<0>(mock.spy_configure.call_history().at(2)));
   };
 
@@ -61,10 +62,10 @@ void spi_mock_test()
     hal::mock::write_only_spi mock;
 
     // Exercise + Verify
-    expect(bool{ mock.transfer(out_1, dummy, filler) });
+    mock.transfer(out_1, dummy, filler);
     expect(out_1 == mock.write_record.at(0));
 
-    expect(bool{ mock.transfer(out_2, dummy, filler) });
+    mock.transfer(out_2, dummy, filler);
     expect(out_2 == mock.write_record.at(1));
     expect(mock.write_record.size() == 2);
 

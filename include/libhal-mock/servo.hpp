@@ -14,8 +14,9 @@
 
 #pragma once
 
-#include "testing.hpp"
 #include <libhal/servo.hpp>
+
+#include "testing.hpp"
 
 namespace hal::mock {
 /**
@@ -38,10 +39,9 @@ struct servo : public hal::servo
   spy_handler<float> spy_position;
 
 private:
-  result<position_t> driver_position(float p_position) override
+  void driver_position(float p_position) override
   {
-    HAL_CHECK(spy_position.record(p_position));
-    return position_t{};
+    spy_position.record(p_position);
   };
 };
 }  // namespace hal::mock

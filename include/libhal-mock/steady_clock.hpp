@@ -31,7 +31,7 @@ struct steady_clock : public hal::steady_clock
    *
    * @param p_frequency - Frequency to return
    */
-  void set_frequency(frequency_t p_frequency)
+  void set_frequency(hal::hertz p_frequency)
   {
     m_frequency = p_frequency;
   }
@@ -41,18 +41,18 @@ struct steady_clock : public hal::steady_clock
    *
    * @param p_uptime_values - Queue of uptimes
    */
-  void set_uptimes(std::queue<uptime_t>& p_uptime_values)
+  void set_uptimes(std::queue<std::uint64_t>& p_uptime_values)
   {
     m_uptime_values = p_uptime_values;
   }
 
 private:
-  frequency_t driver_frequency()
+  hal::hertz driver_frequency()
   {
     return m_frequency;
   }
 
-  uptime_t driver_uptime()
+  std::uint64_t driver_uptime()
   {
     if (m_uptime_values.size() == 0) {
       return m_last_uptime;
@@ -63,8 +63,8 @@ private:
     return m_last_uptime;
   }
 
-  frequency_t m_frequency{ .operating_frequency = 1.0_Hz };
-  std::queue<uptime_t> m_uptime_values{};
-  uptime_t m_last_uptime{};
+  hal::hertz m_frequency{ 1.0_Hz };
+  std::queue<std::uint64_t> m_uptime_values{};
+  std::uint64_t m_last_uptime{};
 };
 }  // namespace hal::mock
