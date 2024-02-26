@@ -35,7 +35,8 @@ void motor_mock_test()
   mock.power(expected2);
   expect(expected2 == std::get<0>(mock.spy_power.call_history().at(1)));
 
-  throws<hal::operation_not_supported>([&]() { mock.power(expected2); });
+  [[maybe_unused]] auto f =
+    throws<hal::operation_not_supported>([&]() { mock.power(expected2); });
   expect(expected2 == std::get<0>(mock.spy_power.call_history().at(2)));
 };
 }  // namespace hal::mock
