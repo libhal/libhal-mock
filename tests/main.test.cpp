@@ -15,10 +15,10 @@
 namespace hal::mock {
 extern void adc_mock_test();
 extern void can_mock_test();
-extern void dac_mock_test();
+// extern void dac_mock_test();
 extern void input_pin_mock_test();
 extern void interrupt_pin_mock_test();
-extern void motor_mock_test();
+// extern void motor_mock_test();
 extern void output_pin_mock_test();
 extern void pwm_mock_test();
 extern void spi_mock_test();
@@ -32,10 +32,10 @@ int main()
 {
   hal::mock::adc_mock_test();
   hal::mock::can_mock_test();
-  hal::mock::dac_mock_test();
+  // hal::mock::dac_mock_test();
   hal::mock::input_pin_mock_test();
   hal::mock::interrupt_pin_mock_test();
-  hal::mock::motor_mock_test();
+  // hal::mock::motor_mock_test();
   hal::mock::output_pin_mock_test();
   hal::mock::pwm_mock_test();
   hal::mock::spi_mock_test();

@@ -17,7 +17,8 @@
 #include <algorithm>
 #include <array>
 #include <chrono>
-#include <ios>
+#include <functional>
+#include <ostream>
 #include <span>
 #include <tuple>
 #include <vector>
@@ -45,25 +46,31 @@ public:
    * @brief Set the record function to return an error after a specified number
    * of recordings.
    *
-   * @param p_call_count_before_trigger - how many calls before an error is
-   * returned.
+   * @param p_call_count_before_trigger - the number of calls before an error
+   * is thrown.
+   * @param p_exception_callback - a callable function that throws an exception
+   * when p_call_count_before_trigger reaches 1.
+   * @throws std::range_error - if p_call_count_before_trigger is below 0.
    */
-  void trigger_error_on_call(int p_call_count_before_trigger)
+  template<typename F>
+  void trigger_error_on_call(int p_call_count_before_trigger,
+                             F&& p_exception_callback)
   {
     if (p_call_count_before_trigger < 0) {
       throw std::range_error("trigger_error_on_call() must be 0 or above");
     }
     m_error_trigger = p_call_count_before_trigger;
+    m_exception_callback = p_exception_callback;
   }
 
   /**
    * @brief Record the arguments of a function being spied on.
    *
    * @param p_args - arguments to record
-   * @return status - success or failure
-   * error trigger has been reached.
+   * @throws ? - once the error trigger count reaches 1. The error depends on
+   * what is thrown from `p_exception_callback` in the `trigger_error_on_call`.
    */
-  [[nodiscard]] status record(args_t... p_args)
+  void record(args_t... p_args)
   {
     m_call_history.push_back(std::make_tuple(p_args...));
 
@@ -71,10 +78,10 @@ public:
       m_error_trigger--;
     } else if (m_error_trigger == 1) {
       m_error_trigger--;
-      return hal::new_error();
+      if (m_exception_callback) {
+        m_exception_callback();
+      }
     }
-
-    return hal::success();
   }
 
   /**
@@ -82,7 +89,7 @@ public:
    *
    * @return const auto& - reference to the call history vector
    */
-  const auto& call_history() const
+  [[nodiscard]] const auto& call_history() const
   {
     return m_call_history;
   }
@@ -95,7 +102,7 @@ public:
    * @throws std::out_of_range - if p_call is beyond the size of call_history
    */
   template<size_t ArgumentIndex>
-  const auto& history(size_t p_call) const
+  [[nodiscard]] const auto& history(size_t p_call) const
   {
     return std::get<ArgumentIndex>(m_call_history.at(p_call));
   }
@@ -112,6 +119,7 @@ public:
 
 private:
   std::vector<std::tuple<args_t...>> m_call_history{};
+  std::function<void()> m_exception_callback{};
   int m_error_trigger = 0;
 };
 }  // namespace hal

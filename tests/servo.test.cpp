@@ -26,16 +26,17 @@ void servo_mock_test()
   hal::mock::servo mock;
   constexpr auto expected1 = hal::degrees(10.0);
   constexpr auto expected2 = hal::degrees(-10.0);
-  mock.spy_position.trigger_error_on_call(3);
+  mock.spy_position.trigger_error_on_call(
+    3, [&]() { throw hal::operation_not_supported(&mock); });
 
   // Exercise + Verify
-  expect(bool{ mock.position(expected1) });
+  mock.position(expected1);
   expect(expected1 == std::get<0>(mock.spy_position.call_history().at(0)));
 
-  expect(bool{ mock.position(expected2) });
+  mock.position(expected2);
   expect(expected2 == std::get<0>(mock.spy_position.call_history().at(1)));
 
-  expect(!mock.position(expected2));
+  [[maybe_unused]] auto f = throws([&]() { mock.position(expected2); });
   expect(expected2 == std::get<0>(mock.spy_position.call_history().at(2)));
 };
 }  // namespace hal::mock

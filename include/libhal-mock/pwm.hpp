@@ -14,8 +14,9 @@
 
 #pragma once
 
-#include "testing.hpp"
 #include <libhal/pwm.hpp>
+
+#include "testing.hpp"
 
 namespace hal::mock {
 /**
@@ -41,17 +42,14 @@ struct pwm : public hal::pwm
   spy_handler<float> spy_duty_cycle;
 
 private:
-  result<frequency_t> driver_frequency(hertz p_settings) override
+  void driver_frequency(hertz p_settings) override
   {
-    HAL_CHECK(spy_frequency.record(p_settings));
-    return frequency_t{};
+    spy_frequency.record(p_settings);
   }
 
-  result<duty_cycle_t> driver_duty_cycle(float p_duty_cycle) override
+  void driver_duty_cycle(float p_duty_cycle) override
   {
-    HAL_CHECK(spy_duty_cycle.record(p_duty_cycle));
-
-    return duty_cycle_t{};
+    spy_duty_cycle.record(p_duty_cycle);
   }
 };
 }  // namespace hal::mock

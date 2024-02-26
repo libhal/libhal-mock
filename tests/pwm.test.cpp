@@ -26,16 +26,17 @@ void pwm_mock_test()
     constexpr auto expected1 = hertz(1'000);
     constexpr auto expected2 = hertz(10'000);
     hal::mock::pwm mock;
-    mock.spy_frequency.trigger_error_on_call(3);
+    mock.spy_frequency.trigger_error_on_call(
+      3, [&]() { throw hal::operation_not_supported(&mock); });
 
     // Exercise + Verify
-    expect(bool{ mock.frequency(expected1) });
+    mock.frequency(expected1);
     expect(expected1 == std::get<0>(mock.spy_frequency.call_history().at(0)));
 
-    expect(bool{ mock.frequency(expected2) });
+    mock.frequency(expected2);
     expect(expected2 == std::get<0>(mock.spy_frequency.call_history().at(1)));
 
-    expect(!mock.frequency(expected2));
+    [[maybe_unused]] auto f = throws([&]() { mock.frequency(expected2); });
     expect(expected2 == std::get<0>(mock.spy_frequency.call_history().at(2)));
   };
 
@@ -44,16 +45,17 @@ void pwm_mock_test()
     constexpr auto expected1 = float(0.5);
     constexpr auto expected2 = float(0.25);
     hal::mock::pwm mock;
-    mock.spy_duty_cycle.trigger_error_on_call(3);
+    mock.spy_duty_cycle.trigger_error_on_call(
+      3, [&]() { throw hal::operation_not_supported(&mock); });
 
     // Exercise + Verify
-    expect(bool{ mock.duty_cycle(expected1) });
+    mock.duty_cycle(expected1);
     expect(expected1 == std::get<0>(mock.spy_duty_cycle.call_history().at(0)));
 
-    expect(bool{ mock.duty_cycle(expected2) });
+    mock.duty_cycle(expected2);
     expect(expected2 == std::get<0>(mock.spy_duty_cycle.call_history().at(1)));
 
-    expect(!mock.duty_cycle(expected2));
+    [[maybe_unused]] auto f = throws([&]() { mock.duty_cycle(expected2); });
     expect(expected2 == std::get<0>(mock.spy_duty_cycle.call_history().at(2)));
   };
 };

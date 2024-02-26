@@ -24,11 +24,10 @@ void steady_clock_mock_test()
   using namespace boost::ut;
 
   // Setup
-  auto expected1 = steady_clock::uptime_t{ .ticks = 10 };
-  auto expected2 = steady_clock::uptime_t{ .ticks = 50 };
-  auto expected3 = steady_clock::uptime_t{ .ticks = 100 };
-  auto expected_frequency =
-    steady_clock::frequency_t{ .operating_frequency = 1.0_Hz };
+  std::uint64_t expected1 = 10;
+  std::uint64_t expected2 = 50;
+  std::uint64_t expected3 = 100;
+  auto expected_frequency = 1.0_Hz;
   hal::mock::steady_clock mock;
   std::deque uptimes{ expected1, expected2, expected3 };
   std::queue queue(uptimes);
@@ -42,10 +41,9 @@ void steady_clock_mock_test()
   auto result3 = mock.uptime();
 
   // Verify
-  expect(that % expected_frequency.operating_frequency ==
-         result0.operating_frequency);
-  expect(that % expected1.ticks == result1.ticks);
-  expect(that % expected2.ticks == result2.ticks);
-  expect(that % expected3.ticks == result3.ticks);
+  expect(that % expected_frequency == result0);
+  expect(that % expected1 == result1);
+  expect(that % expected2 == result2);
+  expect(that % expected3 == result3);
 };
 }  // namespace hal::mock

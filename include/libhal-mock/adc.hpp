@@ -14,8 +14,10 @@
 
 #pragma once
 
-#include <libhal/adc.hpp>
 #include <queue>
+
+#include <libhal/adc.hpp>
+#include <libhal/error.hpp>
 
 namespace hal::mock {
 /**
@@ -28,22 +30,22 @@ struct adc : public hal::adc
    *
    * @param p_adc_values - queue of floats
    */
-  void set(std::queue<read_t>& p_adc_values)
+  void set(std::queue<float>& p_adc_values)
   {
     m_adc_values = p_adc_values;
   }
 
 private:
-  result<read_t> driver_read() override
+  float driver_read() override
   {
     if (m_adc_values.size() == 0) {
-      return hal::new_error(std::out_of_range("floats queue is empty!"));
+      throw std::out_of_range("adc floats queue is empty!");
     }
     auto m_current_value = m_adc_values.front();
     m_adc_values.pop();
     return m_current_value;
   }
 
-  std::queue<read_t> m_adc_values{};
+  std::queue<float> m_adc_values{};
 };
 }  // namespace hal::mock
