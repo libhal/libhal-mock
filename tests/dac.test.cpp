@@ -35,7 +35,8 @@ void dac_mock_test()
   mock.write(expected2);
   expect(expected2 == std::get<0>(mock.spy_write.call_history().at(1)));
 
-  throws<hal::operation_not_supported>([&]() { mock.write(expected2); });
+  [[maybe_unused]] auto f =
+    throws<hal::operation_not_supported>([&]() { mock.write(expected2); });
   expect(expected2 == std::get<0>(mock.spy_write.call_history().at(2)));
 };
 }  // namespace hal::mock
