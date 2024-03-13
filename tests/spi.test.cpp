@@ -48,7 +48,7 @@ void spi_mock_test()
     mock.configure(expected2);
     expect(expected2 == std::get<0>(mock.spy_configure.call_history().at(1)));
 
-    [[maybe_unused]] auto f = throws([&]() { mock.configure(expected2); });
+    expect(throws([&]() { mock.configure(expected2); }));
     expect(expected2 == std::get<0>(mock.spy_configure.call_history().at(2)));
   };
 

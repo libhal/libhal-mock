@@ -36,7 +36,7 @@ void pwm_mock_test()
     mock.frequency(expected2);
     expect(expected2 == std::get<0>(mock.spy_frequency.call_history().at(1)));
 
-    [[maybe_unused]] auto f = throws([&]() { mock.frequency(expected2); });
+    expect(throws([&]() { mock.frequency(expected2); }));
     expect(expected2 == std::get<0>(mock.spy_frequency.call_history().at(2)));
   };
 
@@ -55,7 +55,7 @@ void pwm_mock_test()
     mock.duty_cycle(expected2);
     expect(expected2 == std::get<0>(mock.spy_duty_cycle.call_history().at(1)));
 
-    [[maybe_unused]] auto f = throws([&]() { mock.duty_cycle(expected2); });
+    expect(throws([&]() { mock.duty_cycle(expected2); }));
     expect(expected2 == std::get<0>(mock.spy_duty_cycle.call_history().at(2)));
   };
 };
