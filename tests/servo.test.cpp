@@ -36,7 +36,7 @@ void servo_mock_test()
   mock.position(expected2);
   expect(expected2 == std::get<0>(mock.spy_position.call_history().at(1)));
 
-  [[maybe_unused]] auto f = throws([&]() { mock.position(expected2); });
+  expect(throws([&]() { mock.position(expected2); }));
   expect(expected2 == std::get<0>(mock.spy_position.call_history().at(2)));
 };
 }  // namespace hal::mock
