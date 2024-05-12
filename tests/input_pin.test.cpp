@@ -19,6 +19,7 @@
 #include <libhal-mock/input_pin.hpp>
 
 #include <boost/ut.hpp>
+#include <libhal/error.hpp>
 
 namespace hal::mock {
 void input_pin_mock_test()
@@ -60,8 +61,8 @@ void input_pin_mock_test()
     expect(that % true == mock.level());
     expect(that % false == mock.level());
     expect(that % true == mock.level());
-    [[maybe_unused]] auto f =
-      throws([&]() { [[maybe_unused]] auto level = mock.level(); });
+    expect(throws<hal::operation_not_permitted>(
+      [&]() { [[maybe_unused]] auto level = mock.level(); }));
   };
   "hal::mock::input_pin::reset()"_test = []() {
     // Setup
