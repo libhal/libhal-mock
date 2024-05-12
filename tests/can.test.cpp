@@ -75,8 +75,8 @@ void can_mock_test()
     expect(that % expected2.id ==
            std::get<0>(mock.spy_send.call_history().at(1)).id);
 
-    [[maybe_unused]] auto f =
-      throws<hal::operation_not_supported>([&]() { mock.send(expected2); });
+    expect(
+      throws<hal::operation_not_supported>([&]() { mock.send(expected2); }));
     expect(that % expected2.payload ==
            std::get<0>(mock.spy_send.call_history().at(2)).payload);
     expect(that % expected2.id ==
@@ -107,8 +107,8 @@ void can_mock_test()
     handler2(expected_message);
     expect(that % 0 == counter);
 
-    [[maybe_unused]] auto t = throws<hal::operation_not_supported>(
-      [&]() { mock.on_receive(expected2); });
+    expect(throws<hal::operation_not_supported>(
+      [&]() { mock.on_receive(expected2); }));
     auto handler3 = std::get<0>(mock.spy_on_receive.call_history().at(2));
     handler3(expected_message);
     expect(that % -1 == counter);

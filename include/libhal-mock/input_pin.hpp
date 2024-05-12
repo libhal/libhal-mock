@@ -14,8 +14,8 @@
 
 #pragma once
 
+#include <libhal/error.hpp>
 #include <queue>
-#include <stdexcept>
 
 #include <libhal/input_pin.hpp>
 
@@ -55,12 +55,20 @@ private:
   {
     spy_configure.record(p_settings);
   }
+  /**
+   * @brief Mock implementation of input_pin::driver_level
+   *
+   * @return true - high voltage
+   * @return false - low voltage
+   * @throws throw hal::operation_not_permitted - if the input pin value queue
+   * runs out of elements
+   */
   bool driver_level() override
   {
     // This comparison performs bounds checking because front() and pop() do
     // not bounds check and results in undefined behavior if the queue is empty.
     if (m_levels.size() == 0) {
-      throw std::out_of_range("input_pin level queue is empty!");
+      throw hal::operation_not_permitted(this);
     }
     auto m_current_value = m_levels.front();
     m_levels.pop();

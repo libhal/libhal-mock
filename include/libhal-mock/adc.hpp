@@ -36,10 +36,16 @@ struct adc : public hal::adc
   }
 
 private:
+  /**
+   * @brief mock implementation of driver_read()
+   *
+   * @return float - adc value from queue
+   * @throws throw hal::operation_not_permitted - if the adc queue runs out
+   */
   float driver_read() override
   {
     if (m_adc_values.size() == 0) {
-      throw std::out_of_range("adc floats queue is empty!");
+      throw hal::operation_not_permitted(this);
     }
     auto m_current_value = m_adc_values.front();
     m_adc_values.pop();

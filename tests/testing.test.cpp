@@ -14,7 +14,7 @@
 
 #include <libhal-mock/pwm.hpp>
 
-#include <exception>
+#include <libhal/error.hpp>
 
 #include <boost/ut.hpp>
 
@@ -27,11 +27,10 @@ void testing_utilities_test()
 
   expect(that % 0 == spy.call_history().size());
 
-  spy.trigger_error_on_call(4,
-                            [&]() { throw std::out_of_range("out of range"); });
+  spy.trigger_error_on_call(
+    4, [&]() { throw hal::operation_not_permitted(&spy); });
 
-  [[maybe_unused]] auto a =
-    throws<std::out_of_range>([&]() { spy.record(1, 'A'); });
+  spy.record(1, 'A');
 
   expect(that % 1 == spy.call_history().size());
   expect(that % 1 == std::get<0>(spy.call_history().at(0)));
@@ -39,8 +38,7 @@ void testing_utilities_test()
   expect(that % 'A' == std::get<1>(spy.call_history().at(0)));
   expect(that % 'A' == spy.history<1>(0));
 
-  [[maybe_unused]] auto b =
-    throws<std::out_of_range>([&]() { spy.record(2, 'B'); });
+  spy.record(2, 'B');
 
   expect(that % 2 == spy.call_history().size());
   expect(that % 1 == std::get<0>(spy.call_history().at(0)));
@@ -52,8 +50,7 @@ void testing_utilities_test()
   expect(that % 'B' == std::get<1>(spy.call_history().at(1)));
   expect(that % 'B' == spy.history<1>(1));
 
-  [[maybe_unused]] auto c =
-    throws<std::out_of_range>([&]() { spy.record(3, 'C'); });
+  spy.record(3, 'C');
 
   expect(that % 3 == spy.call_history().size());
   expect(that % 1 == std::get<0>(spy.call_history().at(0)));
@@ -69,8 +66,7 @@ void testing_utilities_test()
   expect(that % 'C' == std::get<1>(spy.call_history().at(2)));
   expect(that % 'C' == spy.history<1>(2));
 
-  [[maybe_unused]] auto d =
-    throws<std::out_of_range>([&]() { spy.record(4, 'D'); });
+  expect(throws<hal::operation_not_permitted>([&]() { spy.record(4, 'D'); }));
 
   expect(that % 4 == spy.call_history().size());
   expect(that % 1 == std::get<0>(spy.call_history().at(0)));
@@ -94,8 +90,7 @@ void testing_utilities_test()
 
   expect(that % 0 == spy.call_history().size());
 
-  [[maybe_unused]] auto e =
-    throws<std::out_of_range>([&]() { spy.record(1, 'A'); });
+  spy.record(1, 'A');
 
   expect(that % 1 == spy.call_history().size());
   expect(that % 1 == std::get<0>(spy.call_history().at(0)));
@@ -103,8 +98,7 @@ void testing_utilities_test()
   expect(that % 'A' == std::get<1>(spy.call_history().at(0)));
   expect(that % 'A' == spy.history<1>(0));
 
-  [[maybe_unused]] auto f =
-    throws<std::out_of_range>([&]() { spy.record(2, 'B'); });
+  spy.record(2, 'B');
 
   expect(that % 2 == spy.call_history().size());
   expect(that % 1 == std::get<0>(spy.call_history().at(0)));
@@ -116,8 +110,7 @@ void testing_utilities_test()
   expect(that % 'B' == std::get<1>(spy.call_history().at(1)));
   expect(that % 'B' == spy.history<1>(1));
 
-  [[maybe_unused]] auto g =
-    throws<std::out_of_range>([&]() { spy.record(3, 'C'); });
+  spy.record(3, 'C');
 
   expect(that % 3 == spy.call_history().size());
   expect(that % 1 == std::get<0>(spy.call_history().at(0)));
@@ -133,8 +126,8 @@ void testing_utilities_test()
   expect(that % 'C' == std::get<1>(spy.call_history().at(2)));
   expect(that % 'C' == spy.history<1>(2));
 
-  [[maybe_unused]] auto h =
-    throws<std::out_of_range>([&]() { spy.record(4, 'D'); });
+  // With reset, the error recording count is also turned off
+  spy.record(4, 'D');
 
   expect(that % 4 == spy.call_history().size());
   expect(that % 1 == std::get<0>(spy.call_history().at(0)));
