@@ -44,12 +44,12 @@ struct write_only_spi : public hal::spi
   std::vector<std::vector<hal::byte>> write_record;
 
 private:
-  void driver_configure(const settings& p_settings) override
+  void driver_configure(settings const& p_settings) override
   {
     spy_configure.record(p_settings);
   };
 
-  void driver_transfer(std::span<const hal::byte> p_data_out,
+  void driver_transfer(std::span<hal::byte const> p_data_out,
                        [[maybe_unused]] std::span<hal::byte> p_data_in,
                        [[maybe_unused]] hal::byte p_filler) override
   {
