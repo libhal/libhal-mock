@@ -41,7 +41,7 @@ struct output_pin : public hal::output_pin
   spy_handler<bool> spy_level;
 
 private:
-  void driver_configure(const settings& p_settings) override
+  void driver_configure(settings const& p_settings) override
   {
     spy_configure.record(p_settings);
   }

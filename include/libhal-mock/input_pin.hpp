@@ -51,7 +51,7 @@ struct input_pin : public hal::input_pin
   }
 
 private:
-  void driver_configure(const settings& p_settings) override
+  void driver_configure(settings const& p_settings) override
   {
     spy_configure.record(p_settings);
   }

@@ -48,7 +48,7 @@ struct can : public hal::can
   spy_handler<hal::callback<handler>> spy_on_receive;
 
 private:
-  void driver_configure(const settings& p_settings) override
+  void driver_configure(settings const& p_settings) override
   {
     spy_configure.record(p_settings);
   }
@@ -58,7 +58,7 @@ private:
     spy_bus_on.record(true);
   }
 
-  void driver_send(const message_t& p_message) override
+  void driver_send(message_t const& p_message) override
   {
     spy_send.record(p_message);
   }
@@ -86,13 +86,13 @@ private:
 template<class CharT, class Traits>
 std::basic_ostream<CharT, Traits>& operator<<(
   std::basic_ostream<CharT, Traits>& p_ostream,
-  const hal::can::message_t& p_message)
+  hal::can::message_t const& p_message)
 {
   p_ostream << "{ id: " << std::hex << "0x" << p_message.id;
   p_ostream << ", length: " << std::dec << unsigned{ p_message.length };
   p_ostream << ", is_remote_request: " << p_message.is_remote_request;
   p_ostream << ", payload = [";
-  for (const auto& element : p_message.payload) {
+  for (auto const& element : p_message.payload) {
     p_ostream << std::hex << "0x" << unsigned{ element } << ", ";
   }
   p_ostream << "] }";

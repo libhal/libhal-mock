@@ -45,7 +45,7 @@ void interrupt_pin_mock_test()
   "hal::mock::interrupt_pin::on_trigger()"_test = []() {
     // Setup
     int counter = 0;
-    const hal::callback<void(bool)> expected_callback = [&counter](bool) {
+    hal::callback<void(bool)> const expected_callback = [&counter](bool) {
       counter++;
     };
     hal::mock::interrupt_pin mock;
@@ -71,7 +71,7 @@ void interrupt_pin_mock_test()
   "hal::mock::interrupt_pin::reset()"_test = []() {
     // Setup
     constexpr hal::interrupt_pin::settings mock_settings_default{};
-    const hal::callback<void(bool)> expected_callback = [](bool) {};
+    hal::callback<void(bool)> const expected_callback = [](bool) {};
     hal::mock::interrupt_pin mock;
     mock.configure(mock_settings_default);
     expect(that % 1 == mock.spy_configure.call_history().size());

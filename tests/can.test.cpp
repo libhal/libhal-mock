@@ -90,9 +90,9 @@ void can_mock_test()
     constexpr hal::can::message_t expected_message{ .id = 1,
                                                     .payload = { 'a' },
                                                     .length = 1 };
-    const hal::callback<hal::can::handler> expected1 =
-      [&counter](const hal::can::message_t) { counter++; };
-    const hal::callback<hal::can::handler> expected2 =
+    hal::callback<hal::can::handler> const expected1 =
+      [&counter](hal::can::message_t const) { counter++; };
+    hal::callback<hal::can::handler> const expected2 =
       [&counter](hal::can::message_t) { counter--; };
     mock.spy_on_receive.trigger_error_on_call(3, error_callback(mock));
 

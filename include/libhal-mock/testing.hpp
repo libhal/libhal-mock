@@ -89,7 +89,7 @@ public:
    *
    * @return const auto& - reference to the call history vector
    */
-  [[nodiscard]] const auto& call_history() const
+  [[nodiscard]] auto const& call_history() const
   {
     return m_call_history;
   }
@@ -102,7 +102,7 @@ public:
    * @throws std::out_of_range - if p_call is beyond the size of call_history
    */
   template<size_t ArgumentIndex>
-  [[nodiscard]] const auto& history(size_t p_call) const
+  [[nodiscard]] auto const& history(size_t p_call) const
   {
     return std::get<ArgumentIndex>(m_call_history.at(p_call));
   }
@@ -127,7 +127,7 @@ private:
 template<typename Rep, typename Period>
 inline std::ostream& operator<<(
   std::ostream& p_os,
-  const std::chrono::duration<Rep, Period>& p_duration)
+  std::chrono::duration<Rep, Period> const& p_duration)
 {
   return p_os << p_duration.count() << " * (" << Period::num << "/"
               << Period::den << ")s";
@@ -135,20 +135,20 @@ inline std::ostream& operator<<(
 
 template<typename T, size_t size>
 inline std::ostream& operator<<(std::ostream& p_os,
-                                const std::array<T, size>& p_array)
+                                std::array<T, size> const& p_array)
 {
   p_os << "{";
-  for (const auto& element : p_array) {
+  for (auto const& element : p_array) {
     p_os << element << ", ";
   }
   return p_os << "}\n";
 }
 
 template<typename T>
-inline std::ostream& operator<<(std::ostream& p_os, const std::span<T>& p_array)
+inline std::ostream& operator<<(std::ostream& p_os, std::span<T> const& p_array)
 {
   p_os << "{";
-  for (const auto& element : p_array) {
+  for (auto const& element : p_array) {
     p_os << element << ", ";
   }
   return p_os << "}\n";
